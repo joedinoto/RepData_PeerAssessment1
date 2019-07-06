@@ -18,7 +18,7 @@ Load the data into a dataframe.
 unzip("activity.zip")
 DF<- read.csv("activity.csv")
 ```
-Invoke the powers of the tidyverse to make the date column read as dates, the interval column as factors, and turn the whole dataframe into a tibble.
+Use `tidyverse` and `lubridate` to make the date column read as dates, the interval column as factors, and turn the whole dataframe into a tibble.
 ```{r}
 library(tidyverse)
 library(lubridate)
@@ -34,10 +34,10 @@ For this part of the assignment, you can ignore the missing values in the datase
 
  1. Make a histogram of the total number of steps taken each day
  
-First, figure out the total number of steps taken each day using dplyr. 
+First, figure out the total number of steps taken each day using `dplyr`. 
 ```{r}
 newDF <- na.omit(DF)
-by_date<- newDF %>%
+by_date<- newDF %>%   
   group_by(date,add=TRUE) %>%
   summarise(total_steps=sum(steps))
 by_date
@@ -45,13 +45,50 @@ by_date
 
 Now create the histogram.
 ```{r}
-with(by_date,hist(total_steps))
+with(by_date,hist(total_steps, breaks=10))
 ```
 
  2. Calculate and report the mean and median total number of steps taken per day
+
+This table, for no good reason, gives the mean of each day over every 5 minute interval. But that's not what we're looking for. 
 ```{r}
 by_date_mean <- newDF %>%
   group_by(date) %>%
-  summarise(mean(steps))
+  summarise(mean_steps=mean(steps))
 by_date_mean
+```
+
+What we're looking for is the mean and median total number of steps taken when we add up the total number of steps per day, not including NAs but including zeros. Those figures are below. 
+```{r}
+mean(by_date$total_steps)
+```
+
+```{r}
+median(by_date$total_steps)
+```
+
+## What is the average daily activity pattern?
+
+ 1. Make a time series plot (i.e. `type = "l"`) of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)
+
+
+```{r}
+by_interval_mean <-newDF %>%
+  group_by(interval) %>%
+  summarize(mean_steps =mean(steps))
+by_interval_mean
+```
+
+```{r}
+with(by_interval_mean,plot(interval,mean_steps,type="l",ylab="mean number of steps",xlab="5-minute interval"))
+```
+
+ 2. Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
+ 
+```{r}
+by_interval_mean[which.max(by_interval_mean$mean_steps),]
+```
+
+```{r}
+max(by_interval_mean$mean_steps)
 ```

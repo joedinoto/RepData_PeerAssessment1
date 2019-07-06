@@ -17,7 +17,7 @@ Load the data into a dataframe.
 unzip("activity.zip")
 DF<- read.csv("activity.csv")
 ```
-Invoke the powers of the tidyverse to make the date column read as dates, the interval column as factors, and turn the whole dataframe into a tibble.
+Use `tidyverse` and `lubridate` to make the date column read as dates, the interval column as factors, and turn the whole dataframe into a tibble.
 
 ```r
 library(tidyverse)
@@ -100,11 +100,11 @@ For this part of the assignment, you can ignore the missing values in the datase
 
  1. Make a histogram of the total number of steps taken each day
  
-First, figure out the total number of steps taken each day using dplyr. 
+First, figure out the total number of steps taken each day using `dplyr`. 
 
 ```r
 newDF <- na.omit(DF)
-by_date<- newDF %>%
+by_date<- newDF %>%   
   group_by(date,add=TRUE) %>%
   summarise(total_steps=sum(steps))
 by_date
@@ -130,33 +130,114 @@ by_date
 Now create the histogram.
 
 ```r
-with(by_date,hist(total_steps))
+with(by_date,hist(total_steps, breaks=10))
 ```
 
 ![](RepData_PeerAssessment1_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
 
  2. Calculate and report the mean and median total number of steps taken per day
 
+This table, for no good reason, gives the mean of each day over every 5 minute interval. But that's not what we're looking for. 
+
 ```r
 by_date_mean <- newDF %>%
   group_by(date) %>%
-  summarise(mean(steps))
+  summarise(mean_steps=mean(steps))
 by_date_mean
 ```
 
 ```
 ## # A tibble: 53 x 2
-##    date       `mean(steps)`
-##    <date>             <dbl>
-##  1 2012-10-02         0.438
-##  2 2012-10-03        39.4  
-##  3 2012-10-04        42.1  
-##  4 2012-10-05        46.2  
-##  5 2012-10-06        53.5  
-##  6 2012-10-07        38.2  
-##  7 2012-10-09        44.5  
-##  8 2012-10-10        34.4  
-##  9 2012-10-11        35.8  
-## 10 2012-10-12        60.4  
+##    date       mean_steps
+##    <date>          <dbl>
+##  1 2012-10-02      0.438
+##  2 2012-10-03     39.4  
+##  3 2012-10-04     42.1  
+##  4 2012-10-05     46.2  
+##  5 2012-10-06     53.5  
+##  6 2012-10-07     38.2  
+##  7 2012-10-09     44.5  
+##  8 2012-10-10     34.4  
+##  9 2012-10-11     35.8  
+## 10 2012-10-12     60.4  
 ## # ... with 43 more rows
+```
+
+What we're looking for is the mean and median total number of steps taken when we add up the total number of steps per day, not including NAs but including zeros. Those figures are below. 
+
+```r
+mean(by_date$total_steps)
+```
+
+```
+## [1] 10766.19
+```
+
+
+```r
+median(by_date$total_steps)
+```
+
+```
+## [1] 10765
+```
+
+## What is the average daily activity pattern?
+
+ 1. Make a time series plot (i.e. `type = "l"`) of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)
+
+
+
+```r
+by_interval_mean <-newDF %>%
+  group_by(interval) %>%
+  summarize(mean_steps =mean(steps))
+by_interval_mean
+```
+
+```
+## # A tibble: 288 x 2
+##    interval mean_steps
+##    <fct>         <dbl>
+##  1 0            1.72  
+##  2 5            0.340 
+##  3 10           0.132 
+##  4 15           0.151 
+##  5 20           0.0755
+##  6 25           2.09  
+##  7 30           0.528 
+##  8 35           0.868 
+##  9 40           0     
+## 10 45           1.47  
+## # ... with 278 more rows
+```
+
+
+```r
+with(by_interval_mean,plot(interval,mean_steps,type="l",ylab="mean number of steps",xlab="5-minute interval"))
+```
+
+![](RepData_PeerAssessment1_files/figure-html/unnamed-chunk-9-1.png)<!-- -->
+
+ 2. Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
+ 
+
+```r
+by_interval_mean[which.max(by_interval_mean$mean_steps),]
+```
+
+```
+## # A tibble: 1 x 2
+##   interval mean_steps
+##   <fct>         <dbl>
+## 1 835            206.
+```
+
+
+```r
+max(by_interval_mean$mean_steps)
+```
+
+```
+## [1] 206.1698
 ```
