@@ -232,12 +232,3 @@ by_interval_mean[which.max(by_interval_mean$mean_steps),]
 ##   <fct>         <dbl>
 ## 1 835            206.
 ```
-
-
-```r
-max(by_interval_mean$mean_steps)
-```
-
-```
-## [1] 206.1698
-```

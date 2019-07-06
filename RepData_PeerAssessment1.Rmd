@@ -88,7 +88,3 @@ with(by_interval_mean,plot(interval,mean_steps,type="l",ylab="mean number of ste
 ```{r}
 by_interval_mean[which.max(by_interval_mean$mean_steps),]
 ```
-
-```{r}
-max(by_interval_mean$mean_steps)
-```
