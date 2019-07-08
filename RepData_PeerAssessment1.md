@@ -364,7 +364,7 @@ DFlong_impute_mean
 
 
 ```r
-# add a new colujmn called `sum' which is the sum of all steps for that day.
+# add a new column called `sum' which is the sum of all steps for that day.
 DFlong_impute_mean$sum <- rowSums(DFlong_impute_mean[,2:289])
 # view the column that was just created
 DFlong_impute_mean[,290]
@@ -386,3 +386,29 @@ DFlong_impute_mean[,290]
 ## 10  9900 
 ## # ... with 51 more rows
 ```
+Now the histogram with the same number of bins as before. 
+
+```r
+with(DFlong_impute_mean[,290],hist(sum,breaks=10))
+```
+
+![](RepData_PeerAssessment1_files/figure-html/unnamed-chunk-14-1.png)<!-- -->
+
+Taking the median and mean of the `sum` column we see they are now identical. Replacing each `NA` with the mean of its five minute interval for that day seems to have brought the mean and median together.
+
+```r
+mean(DFlong_impute_mean$sum)
+```
+
+```
+## [1] 10766.19
+```
+
+```r
+median(DFlong_impute_mean$sum)
+```
+
+```
+## [1] 10766.19
+```
+
