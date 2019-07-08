@@ -109,6 +109,31 @@ There are `2,304 NA` values.
 
 2. Devise a strategy for filling in all of the missing values in the dataset. The strategy does not need to be sophisticated. For example, you could use the mean/median for that day, or the mean for that 5-minute interval, etc.
 
+Using `tidyr` we can create a `61 x 280` table with every day as a row and every 5 minute integrval as a column. Then using sapply we can replace each `NA` with the mean number of steps in its column.
+
+```{r}
+ DFlong <- spread(DF,interval,steps)
+DFlong
+```
+
 3. Create a new dataset that is equal to the original dataset but with the missing data filled in.
 
+Create a new data frame by applying a function which replaces every `NA` with the mean of the column containing it.
+
+```{r}
+DFlong_impute_mean  <- data.frame(sapply(DFlong,function(x) ifelse(is.na(x),mean(x,na.rm=TRUE),x)))
+#change that data.frame into a tibble
+DFlong_impute_mean<- as_tibble(DFlong_impute_mean)
+# replace the date column with a properly formatted date
+DFlong_impute_mean$date <- DFlong$date
+DFlong_impute_mean
+```
+
 4. Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
+
+```{r}
+# add a new colujmn called `sum' which is the sum of all steps for that day.
+DFlong_impute_mean$sum <- rowSums(DFlong_impute_mean[,2:289])
+# view the column that was just created
+DFlong_impute_mean[,290]
+```

@@ -389,7 +389,7 @@ DF&lt;- read.csv(&quot;activity.csv&quot;)</code></pre>
 <p>Use <code>tidyverse</code> and <code>lubridate</code> to make the date column read as dates, the interval column as factors, and turn the whole dataframe into a tibble.</p>
 <pre class="r"><code>library(tidyverse)</code></pre>
 <pre><code>## Warning: package &#39;tidyverse&#39; was built under R version 3.5.3</code></pre>
-<pre><code>## -- Attaching packages ---------------------------- tidyverse 1.2.1 --</code></pre>
+<pre><code>## -- Attaching packages -------------------------------------------------------------------------------------- tidyverse 1.2.1 --</code></pre>
 <pre><code>## v ggplot2 3.2.0     v purrr   0.3.2
 ## v tibble  2.1.3     v dplyr   0.8.2
 ## v tidyr   0.8.3     v stringr 1.4.0
@@ -400,7 +400,7 @@ DF&lt;- read.csv(&quot;activity.csv&quot;)</code></pre>
 <pre><code>## Warning: package &#39;purrr&#39; was built under R version 3.5.3</code></pre>
 <pre><code>## Warning: package &#39;dplyr&#39; was built under R version 3.5.3</code></pre>
 <pre><code>## Warning: package &#39;forcats&#39; was built under R version 3.5.3</code></pre>
-<pre><code>## -- Conflicts ------------------------------- tidyverse_conflicts() --
+<pre><code>## -- Conflicts ----------------------------------------------------------------------------------------- tidyverse_conflicts() --
 ## x dplyr::filter() masks stats::filter()
 ## x dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code>library(lubridate)</code></pre>
@@ -528,10 +528,110 @@ by_interval_mean</code></pre>
 ##  NA&#39;s   :2304                          (Other):17202</code></pre>
 <p>There are <code>2,304 NA</code> values.</p>
 <ol start="2" style="list-style-type: decimal">
-<li><p>Devise a strategy for filling in all of the missing values in the dataset. The strategy does not need to be sophisticated. For example, you could use the mean/median for that day, or the mean for that 5-minute interval, etc.</p></li>
-<li><p>Create a new dataset that is equal to the original dataset but with the missing data filled in.</p></li>
-<li><p>Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?</p></li>
+<li>Devise a strategy for filling in all of the missing values in the dataset. The strategy does not need to be sophisticated. For example, you could use the mean/median for that day, or the mean for that 5-minute interval, etc.</li>
 </ol>
+<p>Using <code>tidyr</code> we can create a <code>61 x 280</code> table with every day as a row and every 5 minute integrval as a column. Then using sapply we can replace each <code>NA</code> with the mean number of steps in its column.</p>
+<pre class="r"><code> DFlong &lt;- spread(DF,interval,steps)
+DFlong</code></pre>
+<pre><code>## # A tibble: 61 x 289
+##    date         `0`   `5`  `10`  `15`  `20`  `25`  `30`  `35`  `40`  `45`
+##    &lt;date&gt;     &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;
+##  1 2012-10-01    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+##  2 2012-10-02     0     0     0     0     0     0     0     0     0     0
+##  3 2012-10-03     0     0     0     0     0     0     0     0     0     0
+##  4 2012-10-04    47     0     0     0     0     0     0     0     0     0
+##  5 2012-10-05     0     0     0     0     0     0     0     0     0     0
+##  6 2012-10-06     0     0     0     0     0     0     0     0     0     0
+##  7 2012-10-07     0     0     0     0     0     0     0     0     0     0
+##  8 2012-10-08    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+##  9 2012-10-09     0     0     0     0     0    13    28     0     0     0
+## 10 2012-10-10    34    18     7     0     0     0     0     0     0     0
+## # ... with 51 more rows, and 278 more variables: `50` &lt;int&gt;, `55` &lt;int&gt;,
+## #   `100` &lt;int&gt;, `105` &lt;int&gt;, `110` &lt;int&gt;, `115` &lt;int&gt;, `120` &lt;int&gt;,
+## #   `125` &lt;int&gt;, `130` &lt;int&gt;, `135` &lt;int&gt;, `140` &lt;int&gt;, `145` &lt;int&gt;,
+## #   `150` &lt;int&gt;, `155` &lt;int&gt;, `200` &lt;int&gt;, `205` &lt;int&gt;, `210` &lt;int&gt;,
+## #   `215` &lt;int&gt;, `220` &lt;int&gt;, `225` &lt;int&gt;, `230` &lt;int&gt;, `235` &lt;int&gt;,
+## #   `240` &lt;int&gt;, `245` &lt;int&gt;, `250` &lt;int&gt;, `255` &lt;int&gt;, `300` &lt;int&gt;,
+## #   `305` &lt;int&gt;, `310` &lt;int&gt;, `315` &lt;int&gt;, `320` &lt;int&gt;, `325` &lt;int&gt;,
+## #   `330` &lt;int&gt;, `335` &lt;int&gt;, `340` &lt;int&gt;, `345` &lt;int&gt;, `350` &lt;int&gt;,
+## #   `355` &lt;int&gt;, `400` &lt;int&gt;, `405` &lt;int&gt;, `410` &lt;int&gt;, `415` &lt;int&gt;,
+## #   `420` &lt;int&gt;, `425` &lt;int&gt;, `430` &lt;int&gt;, `435` &lt;int&gt;, `440` &lt;int&gt;,
+## #   `445` &lt;int&gt;, `450` &lt;int&gt;, `455` &lt;int&gt;, `500` &lt;int&gt;, `505` &lt;int&gt;,
+## #   `510` &lt;int&gt;, `515` &lt;int&gt;, `520` &lt;int&gt;, `525` &lt;int&gt;, `530` &lt;int&gt;,
+## #   `535` &lt;int&gt;, `540` &lt;int&gt;, `545` &lt;int&gt;, `550` &lt;int&gt;, `555` &lt;int&gt;,
+## #   `600` &lt;int&gt;, `605` &lt;int&gt;, `610` &lt;int&gt;, `615` &lt;int&gt;, `620` &lt;int&gt;,
+## #   `625` &lt;int&gt;, `630` &lt;int&gt;, `635` &lt;int&gt;, `640` &lt;int&gt;, `645` &lt;int&gt;,
+## #   `650` &lt;int&gt;, `655` &lt;int&gt;, `700` &lt;int&gt;, `705` &lt;int&gt;, `710` &lt;int&gt;,
+## #   `715` &lt;int&gt;, `720` &lt;int&gt;, `725` &lt;int&gt;, `730` &lt;int&gt;, `735` &lt;int&gt;,
+## #   `740` &lt;int&gt;, `745` &lt;int&gt;, `750` &lt;int&gt;, `755` &lt;int&gt;, `800` &lt;int&gt;,
+## #   `805` &lt;int&gt;, `810` &lt;int&gt;, `815` &lt;int&gt;, `820` &lt;int&gt;, `825` &lt;int&gt;,
+## #   `830` &lt;int&gt;, `835` &lt;int&gt;, `840` &lt;int&gt;, `845` &lt;int&gt;, `850` &lt;int&gt;,
+## #   `855` &lt;int&gt;, `900` &lt;int&gt;, `905` &lt;int&gt;, ...</code></pre>
+<ol start="3" style="list-style-type: decimal">
+<li>Create a new dataset that is equal to the original dataset but with the missing data filled in.</li>
+</ol>
+<p>Create a new data frame by applying a function which replaces every <code>NA</code> with the mean of the column containing it.</p>
+<pre class="r"><code>DFlong_impute_mean  &lt;- data.frame(sapply(DFlong,function(x) ifelse(is.na(x),mean(x,na.rm=TRUE),x)))
+#change that data.frame into a tibble
+DFlong_impute_mean&lt;- as_tibble(DFlong_impute_mean)
+# replace the date column with a properly formatted date
+DFlong_impute_mean$date &lt;- DFlong$date
+DFlong_impute_mean</code></pre>
+<pre><code>## # A tibble: 61 x 289
+##    date          X0     X5   X10   X15    X20   X25    X30   X35   X40
+##    &lt;date&gt;     &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1 2012-10-01  1.72  0.340 0.132 0.151 0.0755  2.09  0.528 0.868     0
+##  2 2012-10-02  0     0     0     0     0       0     0     0         0
+##  3 2012-10-03  0     0     0     0     0       0     0     0         0
+##  4 2012-10-04 47     0     0     0     0       0     0     0         0
+##  5 2012-10-05  0     0     0     0     0       0     0     0         0
+##  6 2012-10-06  0     0     0     0     0       0     0     0         0
+##  7 2012-10-07  0     0     0     0     0       0     0     0         0
+##  8 2012-10-08  1.72  0.340 0.132 0.151 0.0755  2.09  0.528 0.868     0
+##  9 2012-10-09  0     0     0     0     0      13    28     0         0
+## 10 2012-10-10 34    18     7     0     0       0     0     0         0
+## # ... with 51 more rows, and 279 more variables: X45 &lt;dbl&gt;, X50 &lt;dbl&gt;,
+## #   X55 &lt;dbl&gt;, X100 &lt;dbl&gt;, X105 &lt;dbl&gt;, X110 &lt;dbl&gt;, X115 &lt;dbl&gt;, X120 &lt;dbl&gt;,
+## #   X125 &lt;dbl&gt;, X130 &lt;dbl&gt;, X135 &lt;dbl&gt;, X140 &lt;dbl&gt;, X145 &lt;dbl&gt;,
+## #   X150 &lt;dbl&gt;, X155 &lt;dbl&gt;, X200 &lt;dbl&gt;, X205 &lt;dbl&gt;, X210 &lt;dbl&gt;,
+## #   X215 &lt;dbl&gt;, X220 &lt;dbl&gt;, X225 &lt;dbl&gt;, X230 &lt;dbl&gt;, X235 &lt;dbl&gt;,
+## #   X240 &lt;dbl&gt;, X245 &lt;dbl&gt;, X250 &lt;dbl&gt;, X255 &lt;dbl&gt;, X300 &lt;dbl&gt;,
+## #   X305 &lt;dbl&gt;, X310 &lt;dbl&gt;, X315 &lt;dbl&gt;, X320 &lt;dbl&gt;, X325 &lt;dbl&gt;,
+## #   X330 &lt;dbl&gt;, X335 &lt;dbl&gt;, X340 &lt;dbl&gt;, X345 &lt;dbl&gt;, X350 &lt;dbl&gt;,
+## #   X355 &lt;dbl&gt;, X400 &lt;dbl&gt;, X405 &lt;dbl&gt;, X410 &lt;dbl&gt;, X415 &lt;dbl&gt;,
+## #   X420 &lt;dbl&gt;, X425 &lt;dbl&gt;, X430 &lt;dbl&gt;, X435 &lt;dbl&gt;, X440 &lt;dbl&gt;,
+## #   X445 &lt;dbl&gt;, X450 &lt;dbl&gt;, X455 &lt;dbl&gt;, X500 &lt;dbl&gt;, X505 &lt;dbl&gt;,
+## #   X510 &lt;dbl&gt;, X515 &lt;dbl&gt;, X520 &lt;dbl&gt;, X525 &lt;dbl&gt;, X530 &lt;dbl&gt;,
+## #   X535 &lt;dbl&gt;, X540 &lt;dbl&gt;, X545 &lt;dbl&gt;, X550 &lt;dbl&gt;, X555 &lt;dbl&gt;,
+## #   X600 &lt;dbl&gt;, X605 &lt;dbl&gt;, X610 &lt;dbl&gt;, X615 &lt;dbl&gt;, X620 &lt;dbl&gt;,
+## #   X625 &lt;dbl&gt;, X630 &lt;dbl&gt;, X635 &lt;dbl&gt;, X640 &lt;dbl&gt;, X645 &lt;dbl&gt;,
+## #   X650 &lt;dbl&gt;, X655 &lt;dbl&gt;, X700 &lt;dbl&gt;, X705 &lt;dbl&gt;, X710 &lt;dbl&gt;,
+## #   X715 &lt;dbl&gt;, X720 &lt;dbl&gt;, X725 &lt;dbl&gt;, X730 &lt;dbl&gt;, X735 &lt;dbl&gt;,
+## #   X740 &lt;dbl&gt;, X745 &lt;dbl&gt;, X750 &lt;dbl&gt;, X755 &lt;dbl&gt;, X800 &lt;dbl&gt;,
+## #   X805 &lt;dbl&gt;, X810 &lt;dbl&gt;, X815 &lt;dbl&gt;, X820 &lt;dbl&gt;, X825 &lt;dbl&gt;,
+## #   X830 &lt;dbl&gt;, X835 &lt;dbl&gt;, X840 &lt;dbl&gt;, X845 &lt;dbl&gt;, X850 &lt;dbl&gt;,
+## #   X855 &lt;dbl&gt;, X900 &lt;dbl&gt;, ...</code></pre>
+<ol start="4" style="list-style-type: decimal">
+<li>Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?</li>
+</ol>
+<pre class="r"><code># add a new colujmn called `sum&#39; which is the sum of all steps for that day.
+DFlong_impute_mean$sum &lt;- rowSums(DFlong_impute_mean[,2:289])
+# view the column that was just created
+DFlong_impute_mean[,290]</code></pre>
+<pre><code>## # A tibble: 61 x 1
+##       sum
+##     &lt;dbl&gt;
+##  1 10766.
+##  2   126 
+##  3 11352 
+##  4 12116 
+##  5 13294 
+##  6 15420 
+##  7 11015 
+##  8 10766.
+##  9 12811 
+## 10  9900 
+## # ... with 51 more rows</code></pre>
 </div>
 
 

@@ -28,7 +28,7 @@ library(tidyverse)
 ```
 
 ```
-## -- Attaching packages ---------------------------- tidyverse 1.2.1 --
+## -- Attaching packages -------------------------------------------------------------------------------------- tidyverse 1.2.1 --
 ```
 
 ```
@@ -63,7 +63,7 @@ library(tidyverse)
 ```
 
 ```
-## -- Conflicts ------------------------------- tidyverse_conflicts() --
+## -- Conflicts ----------------------------------------------------------------------------------------- tidyverse_conflicts() --
 ## x dplyr::filter() masks stats::filter()
 ## x dplyr::lag()    masks stats::lag()
 ```
@@ -264,6 +264,125 @@ There are `2,304 NA` values.
 
 2. Devise a strategy for filling in all of the missing values in the dataset. The strategy does not need to be sophisticated. For example, you could use the mean/median for that day, or the mean for that 5-minute interval, etc.
 
+Using `tidyr` we can create a `61 x 280` table with every day as a row and every 5 minute integrval as a column. Then using sapply we can replace each `NA` with the mean number of steps in its column.
+
+
+```r
+ DFlong <- spread(DF,interval,steps)
+DFlong
+```
+
+```
+## # A tibble: 61 x 289
+##    date         `0`   `5`  `10`  `15`  `20`  `25`  `30`  `35`  `40`  `45`
+##    <date>     <int> <int> <int> <int> <int> <int> <int> <int> <int> <int>
+##  1 2012-10-01    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+##  2 2012-10-02     0     0     0     0     0     0     0     0     0     0
+##  3 2012-10-03     0     0     0     0     0     0     0     0     0     0
+##  4 2012-10-04    47     0     0     0     0     0     0     0     0     0
+##  5 2012-10-05     0     0     0     0     0     0     0     0     0     0
+##  6 2012-10-06     0     0     0     0     0     0     0     0     0     0
+##  7 2012-10-07     0     0     0     0     0     0     0     0     0     0
+##  8 2012-10-08    NA    NA    NA    NA    NA    NA    NA    NA    NA    NA
+##  9 2012-10-09     0     0     0     0     0    13    28     0     0     0
+## 10 2012-10-10    34    18     7     0     0     0     0     0     0     0
+## # ... with 51 more rows, and 278 more variables: `50` <int>, `55` <int>,
+## #   `100` <int>, `105` <int>, `110` <int>, `115` <int>, `120` <int>,
+## #   `125` <int>, `130` <int>, `135` <int>, `140` <int>, `145` <int>,
+## #   `150` <int>, `155` <int>, `200` <int>, `205` <int>, `210` <int>,
+## #   `215` <int>, `220` <int>, `225` <int>, `230` <int>, `235` <int>,
+## #   `240` <int>, `245` <int>, `250` <int>, `255` <int>, `300` <int>,
+## #   `305` <int>, `310` <int>, `315` <int>, `320` <int>, `325` <int>,
+## #   `330` <int>, `335` <int>, `340` <int>, `345` <int>, `350` <int>,
+## #   `355` <int>, `400` <int>, `405` <int>, `410` <int>, `415` <int>,
+## #   `420` <int>, `425` <int>, `430` <int>, `435` <int>, `440` <int>,
+## #   `445` <int>, `450` <int>, `455` <int>, `500` <int>, `505` <int>,
+## #   `510` <int>, `515` <int>, `520` <int>, `525` <int>, `530` <int>,
+## #   `535` <int>, `540` <int>, `545` <int>, `550` <int>, `555` <int>,
+## #   `600` <int>, `605` <int>, `610` <int>, `615` <int>, `620` <int>,
+## #   `625` <int>, `630` <int>, `635` <int>, `640` <int>, `645` <int>,
+## #   `650` <int>, `655` <int>, `700` <int>, `705` <int>, `710` <int>,
+## #   `715` <int>, `720` <int>, `725` <int>, `730` <int>, `735` <int>,
+## #   `740` <int>, `745` <int>, `750` <int>, `755` <int>, `800` <int>,
+## #   `805` <int>, `810` <int>, `815` <int>, `820` <int>, `825` <int>,
+## #   `830` <int>, `835` <int>, `840` <int>, `845` <int>, `850` <int>,
+## #   `855` <int>, `900` <int>, `905` <int>, ...
+```
+
 3. Create a new dataset that is equal to the original dataset but with the missing data filled in.
 
+Create a new data frame by applying a function which replaces every `NA` with the mean of the column containing it.
+
+
+```r
+DFlong_impute_mean  <- data.frame(sapply(DFlong,function(x) ifelse(is.na(x),mean(x,na.rm=TRUE),x)))
+#change that data.frame into a tibble
+DFlong_impute_mean<- as_tibble(DFlong_impute_mean)
+# replace the date column with a properly formatted date
+DFlong_impute_mean$date <- DFlong$date
+DFlong_impute_mean
+```
+
+```
+## # A tibble: 61 x 289
+##    date          X0     X5   X10   X15    X20   X25    X30   X35   X40
+##    <date>     <dbl>  <dbl> <dbl> <dbl>  <dbl> <dbl>  <dbl> <dbl> <dbl>
+##  1 2012-10-01  1.72  0.340 0.132 0.151 0.0755  2.09  0.528 0.868     0
+##  2 2012-10-02  0     0     0     0     0       0     0     0         0
+##  3 2012-10-03  0     0     0     0     0       0     0     0         0
+##  4 2012-10-04 47     0     0     0     0       0     0     0         0
+##  5 2012-10-05  0     0     0     0     0       0     0     0         0
+##  6 2012-10-06  0     0     0     0     0       0     0     0         0
+##  7 2012-10-07  0     0     0     0     0       0     0     0         0
+##  8 2012-10-08  1.72  0.340 0.132 0.151 0.0755  2.09  0.528 0.868     0
+##  9 2012-10-09  0     0     0     0     0      13    28     0         0
+## 10 2012-10-10 34    18     7     0     0       0     0     0         0
+## # ... with 51 more rows, and 279 more variables: X45 <dbl>, X50 <dbl>,
+## #   X55 <dbl>, X100 <dbl>, X105 <dbl>, X110 <dbl>, X115 <dbl>, X120 <dbl>,
+## #   X125 <dbl>, X130 <dbl>, X135 <dbl>, X140 <dbl>, X145 <dbl>,
+## #   X150 <dbl>, X155 <dbl>, X200 <dbl>, X205 <dbl>, X210 <dbl>,
+## #   X215 <dbl>, X220 <dbl>, X225 <dbl>, X230 <dbl>, X235 <dbl>,
+## #   X240 <dbl>, X245 <dbl>, X250 <dbl>, X255 <dbl>, X300 <dbl>,
+## #   X305 <dbl>, X310 <dbl>, X315 <dbl>, X320 <dbl>, X325 <dbl>,
+## #   X330 <dbl>, X335 <dbl>, X340 <dbl>, X345 <dbl>, X350 <dbl>,
+## #   X355 <dbl>, X400 <dbl>, X405 <dbl>, X410 <dbl>, X415 <dbl>,
+## #   X420 <dbl>, X425 <dbl>, X430 <dbl>, X435 <dbl>, X440 <dbl>,
+## #   X445 <dbl>, X450 <dbl>, X455 <dbl>, X500 <dbl>, X505 <dbl>,
+## #   X510 <dbl>, X515 <dbl>, X520 <dbl>, X525 <dbl>, X530 <dbl>,
+## #   X535 <dbl>, X540 <dbl>, X545 <dbl>, X550 <dbl>, X555 <dbl>,
+## #   X600 <dbl>, X605 <dbl>, X610 <dbl>, X615 <dbl>, X620 <dbl>,
+## #   X625 <dbl>, X630 <dbl>, X635 <dbl>, X640 <dbl>, X645 <dbl>,
+## #   X650 <dbl>, X655 <dbl>, X700 <dbl>, X705 <dbl>, X710 <dbl>,
+## #   X715 <dbl>, X720 <dbl>, X725 <dbl>, X730 <dbl>, X735 <dbl>,
+## #   X740 <dbl>, X745 <dbl>, X750 <dbl>, X755 <dbl>, X800 <dbl>,
+## #   X805 <dbl>, X810 <dbl>, X815 <dbl>, X820 <dbl>, X825 <dbl>,
+## #   X830 <dbl>, X835 <dbl>, X840 <dbl>, X845 <dbl>, X850 <dbl>,
+## #   X855 <dbl>, X900 <dbl>, ...
+```
+
 4. Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
+
+
+```r
+# add a new colujmn called `sum' which is the sum of all steps for that day.
+DFlong_impute_mean$sum <- rowSums(DFlong_impute_mean[,2:289])
+# view the column that was just created
+DFlong_impute_mean[,290]
+```
+
+```
+## # A tibble: 61 x 1
+##       sum
+##     <dbl>
+##  1 10766.
+##  2   126 
+##  3 11352 
+##  4 12116 
+##  5 13294 
+##  6 15420 
+##  7 11015 
+##  8 10766.
+##  9 12811 
+## 10  9900 
+## # ... with 51 more rows
+```
