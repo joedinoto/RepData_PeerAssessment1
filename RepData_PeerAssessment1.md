@@ -17,7 +17,7 @@ Load the data into a dataframe.
 unzip("activity.zip")
 DF<- read.csv("activity.csv")
 ```
-Use `tidyverse` and `lubridate` to make the date column read as dates, the interval column as factors, and turn the whole dataframe into a tibble.
+Use `tidyverse` and `lubridate` to make the date column read as dates and turn the whole dataframe into a tibble.
 
 ```r
 library(tidyverse)
@@ -28,7 +28,7 @@ library(tidyverse)
 ```
 
 ```
-## -- Attaching packages -------------------------------------------------------------------------------------- tidyverse 1.2.1 --
+## -- Attaching packages -------------------------------------------------------------------------------------------------------------- tidyverse 1.2.1 --
 ```
 
 ```
@@ -63,7 +63,7 @@ library(tidyverse)
 ```
 
 ```
-## -- Conflicts ----------------------------------------------------------------------------------------- tidyverse_conflicts() --
+## -- Conflicts ----------------------------------------------------------------------------------------------------------------- tidyverse_conflicts() --
 ## x dplyr::filter() masks stats::filter()
 ## x dplyr::lag()    masks stats::lag()
 ```
@@ -89,7 +89,6 @@ library(lubridate)
 
 ```r
 DF$date <- ymd(DF$date)
-DF$interval <- as.factor(DF$interval)
 DF<- as_tibble(DF)
 DF
 ```
@@ -97,17 +96,17 @@ DF
 ```
 ## # A tibble: 17,568 x 3
 ##    steps date       interval
-##    <int> <date>     <fct>   
-##  1    NA 2012-10-01 0       
-##  2    NA 2012-10-01 5       
-##  3    NA 2012-10-01 10      
-##  4    NA 2012-10-01 15      
-##  5    NA 2012-10-01 20      
-##  6    NA 2012-10-01 25      
-##  7    NA 2012-10-01 30      
-##  8    NA 2012-10-01 35      
-##  9    NA 2012-10-01 40      
-## 10    NA 2012-10-01 45      
+##    <int> <date>        <int>
+##  1    NA 2012-10-01        0
+##  2    NA 2012-10-01        5
+##  3    NA 2012-10-01       10
+##  4    NA 2012-10-01       15
+##  5    NA 2012-10-01       20
+##  6    NA 2012-10-01       25
+##  7    NA 2012-10-01       30
+##  8    NA 2012-10-01       35
+##  9    NA 2012-10-01       40
+## 10    NA 2012-10-01       45
 ## # ... with 17,558 more rows
 ```
 
@@ -198,17 +197,17 @@ by_interval_mean
 ```
 ## # A tibble: 288 x 2
 ##    interval mean_steps
-##    <fct>         <dbl>
-##  1 0            1.72  
-##  2 5            0.340 
-##  3 10           0.132 
-##  4 15           0.151 
-##  5 20           0.0755
-##  6 25           2.09  
-##  7 30           0.528 
-##  8 35           0.868 
-##  9 40           0     
-## 10 45           1.47  
+##       <int>      <dbl>
+##  1        0     1.72  
+##  2        5     0.340 
+##  3       10     0.132 
+##  4       15     0.151 
+##  5       20     0.0755
+##  6       25     2.09  
+##  7       30     0.528 
+##  8       35     0.868 
+##  9       40     0     
+## 10       45     1.47  
 ## # ... with 278 more rows
 ```
 
@@ -233,8 +232,8 @@ by_interval_mean[which.max(by_interval_mean$mean_steps),]
 ```
 ## # A tibble: 1 x 2
 ##   interval mean_steps
-##   <fct>         <dbl>
-## 1 835            206.
+##      <int>      <dbl>
+## 1      835       206.
 ```
 
 ## Imputing missing values
@@ -249,14 +248,14 @@ summary(DF)
 ```
 
 ```
-##      steps             date               interval    
-##  Min.   :  0.00   Min.   :2012-10-01   0      :   61  
-##  1st Qu.:  0.00   1st Qu.:2012-10-16   5      :   61  
-##  Median :  0.00   Median :2012-10-31   10     :   61  
-##  Mean   : 37.38   Mean   :2012-10-31   15     :   61  
-##  3rd Qu.: 12.00   3rd Qu.:2012-11-15   20     :   61  
-##  Max.   :806.00   Max.   :2012-11-30   25     :   61  
-##  NA's   :2304                          (Other):17202
+##      steps             date               interval     
+##  Min.   :  0.00   Min.   :2012-10-01   Min.   :   0.0  
+##  1st Qu.:  0.00   1st Qu.:2012-10-16   1st Qu.: 588.8  
+##  Median :  0.00   Median :2012-10-31   Median :1177.5  
+##  Mean   : 37.38   Mean   :2012-10-31   Mean   :1177.5  
+##  3rd Qu.: 12.00   3rd Qu.:2012-11-15   3rd Qu.:1766.2  
+##  Max.   :806.00   Max.   :2012-11-30   Max.   :2355.0  
+##  NA's   :2304
 ```
 
 There are `2,304 NA` values. 

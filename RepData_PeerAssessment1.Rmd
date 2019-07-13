@@ -18,12 +18,11 @@ Load the data into a dataframe.
 unzip("activity.zip")
 DF<- read.csv("activity.csv")
 ```
-Use `tidyverse` and `lubridate` to make the date column read as dates, the interval column as factors, and turn the whole dataframe into a tibble.
+Use `tidyverse` and `lubridate` to make the date column read as dates and turn the whole dataframe into a tibble.
 ```{r}
 library(tidyverse)
 library(lubridate)
 DF$date <- ymd(DF$date)
-DF$interval <- as.factor(DF$interval)
 DF<- as_tibble(DF)
 DF
 ```
