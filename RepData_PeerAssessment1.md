@@ -240,7 +240,7 @@ by_interval_mean[which.max(by_interval_mean$mean_steps),]
 
 Note that there are a number of days/intervals where there are missing values (coded as NA). The presence of missing days may introduce bias into some calculations or summaries of the data.
 
-1. Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with NAs)
+1. **Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with NAs)**
 
 
 ```r
@@ -261,7 +261,7 @@ summary(DF)
 There are `2,304 NA` values. 
 
 
-2. Devise a strategy for filling in all of the missing values in the dataset. The strategy does not need to be sophisticated. For example, you could use the mean/median for that day, or the mean for that 5-minute interval, etc.
+2. **Devise a strategy for filling in all of the missing values in the dataset. The strategy does not need to be sophisticated. For example, you could use the mean/median for that day, or the mean for that 5-minute interval, etc.**
 
 Using `tidyr` we can create a `61 x 280` table with every day as a row and every 5 minute integrval as a column. Then using sapply we can replace each `NA` with the mean number of steps in its column.
 
@@ -308,7 +308,7 @@ DFlong
 ## #   `855` <int>, `900` <int>, `905` <int>, ...
 ```
 
-3. Create a new dataset that is equal to the original dataset but with the missing data filled in.
+3. **Create a new dataset that is equal to the original dataset but with the missing data filled in.**
 
 Create a new data frame by applying a function which replaces every `NA` with the mean of the column containing it.
 
@@ -359,7 +359,7 @@ DFlong_impute_mean
 ## #   X855 <dbl>, X900 <dbl>, ...
 ```
 
-4. Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
+4. **Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?**
 
 
 ```r
@@ -412,7 +412,7 @@ median(DFlong_impute_mean$sum)
 ```
 ## Are there differences in activity patterns between weekdays and weekends?
 
- 1. Create a new factor variable in the dataset with two levels – “weekday” and “weekend” indicating whether a given date is a weekday or weekend day.
+ 1. **Create a new factor variable in the dataset with two levels – “weekday” and “weekend” indicating whether a given date is a weekday or weekend day.**
 
 Note that these are 61 consecutive days in a row starting with a Monday, so I created a vector consisting of "no","no","no","no","no","yes","yes" corresponding to whether or not the days Monday through Sunday are weekend days. I created 8 copies of that vector `7x8=56` and then added 5 more "no"s to the end of that for Monday thorugh Friday inclusive making a `61x1` vector, which I simply appended to the long table and made into a factor. 
 
@@ -487,7 +487,7 @@ DFtall
 ## # ... with 17,558 more rows
 ```
 
-2. Make a panel plot containing a time series plot (i.e. `type= "l"`) of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis). See the README file in the GitHub repository to see an example of what this plot should look like using simulated data.
+2. **Make a panel plot containing a time series plot (i.e. `type= "l"`) of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis). See the README file in the GitHub repository to see an example of what this plot should look like using simulated data.**
 
 
 ```r

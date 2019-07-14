@@ -514,7 +514,7 @@ by_interval_mean</code></pre>
 <h2>Imputing missing values</h2>
 <p>Note that there are a number of days/intervals where there are missing values (coded as NA). The presence of missing days may introduce bias into some calculations or summaries of the data.</p>
 <ol style="list-style-type: decimal">
-<li>Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with NAs)</li>
+<li><strong>Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with NAs)</strong></li>
 </ol>
 <pre class="r"><code>summary(DF)</code></pre>
 <pre><code>##      steps             date               interval     
@@ -527,7 +527,7 @@ by_interval_mean</code></pre>
 ##  NA&#39;s   :2304</code></pre>
 <p>There are <code>2,304 NA</code> values.</p>
 <ol start="2" style="list-style-type: decimal">
-<li>Devise a strategy for filling in all of the missing values in the dataset. The strategy does not need to be sophisticated. For example, you could use the mean/median for that day, or the mean for that 5-minute interval, etc.</li>
+<li><strong>Devise a strategy for filling in all of the missing values in the dataset. The strategy does not need to be sophisticated. For example, you could use the mean/median for that day, or the mean for that 5-minute interval, etc.</strong></li>
 </ol>
 <p>Using <code>tidyr</code> we can create a <code>61 x 280</code> table with every day as a row and every 5 minute integrval as a column. Then using sapply we can replace each <code>NA</code> with the mean number of steps in its column.</p>
 <pre class="r"><code> DFlong &lt;- spread(DF,interval,steps)
@@ -567,7 +567,7 @@ DFlong</code></pre>
 ## #   `830` &lt;int&gt;, `835` &lt;int&gt;, `840` &lt;int&gt;, `845` &lt;int&gt;, `850` &lt;int&gt;,
 ## #   `855` &lt;int&gt;, `900` &lt;int&gt;, `905` &lt;int&gt;, ...</code></pre>
 <ol start="3" style="list-style-type: decimal">
-<li>Create a new dataset that is equal to the original dataset but with the missing data filled in.</li>
+<li><strong>Create a new dataset that is equal to the original dataset but with the missing data filled in.</strong></li>
 </ol>
 <p>Create a new data frame by applying a function which replaces every <code>NA</code> with the mean of the column containing it.</p>
 <pre class="r"><code>DFlong_impute_mean  &lt;- data.frame(sapply(DFlong,function(x) ifelse(is.na(x),mean(x,na.rm=TRUE),x)))
@@ -611,7 +611,7 @@ DFlong_impute_mean</code></pre>
 ## #   X830 &lt;dbl&gt;, X835 &lt;dbl&gt;, X840 &lt;dbl&gt;, X845 &lt;dbl&gt;, X850 &lt;dbl&gt;,
 ## #   X855 &lt;dbl&gt;, X900 &lt;dbl&gt;, ...</code></pre>
 <ol start="4" style="list-style-type: decimal">
-<li>Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?</li>
+<li><strong>Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?</strong></li>
 </ol>
 <pre class="r"><code># add a new column called `sum&#39; which is the sum of all steps for that day.
 DFlong_impute_mean$sum &lt;- rowSums(DFlong_impute_mean[,2:289])
@@ -643,7 +643,7 @@ DFlong_impute_mean[,290]</code></pre>
 <div id="are-there-differences-in-activity-patterns-between-weekdays-and-weekends" class="section level2">
 <h2>Are there differences in activity patterns between weekdays and weekends?</h2>
 <ol style="list-style-type: decimal">
-<li>Create a new factor variable in the dataset with two levels – “weekday” and “weekend” indicating whether a given date is a weekday or weekend day.</li>
+<li><strong>Create a new factor variable in the dataset with two levels – “weekday” and “weekend” indicating whether a given date is a weekday or weekend day.</strong></li>
 </ol>
 <p>Note that these are 61 consecutive days in a row starting with a Monday, so I created a vector consisting of “no”,“no”,“no”,“no”,“no”,“yes”,“yes” corresponding to whether or not the days Monday through Sunday are weekend days. I created 8 copies of that vector <code>7x8=56</code> and then added 5 more “no”s to the end of that for Monday thorugh Friday inclusive making a <code>61x1</code> vector, which I simply appended to the long table and made into a factor.</p>
 <pre class="r"><code>weekend &lt;- c(rep(c(rep(&quot;no&quot;,5),rep(&quot;yes&quot;,2)),8),c(rep(&quot;no&quot;,5)))
@@ -705,7 +705,7 @@ DFtall</code></pre>
 ## 10 2012-10-10  9900  no      X0       34   
 ## # ... with 17,558 more rows</code></pre>
 <ol start="2" style="list-style-type: decimal">
-<li>Make a panel plot containing a time series plot (i.e. <code>type= &quot;l&quot;</code>) of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis). See the README file in the GitHub repository to see an example of what this plot should look like using simulated data.</li>
+<li><strong>Make a panel plot containing a time series plot (i.e. <code>type= &quot;l&quot;</code>) of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis). See the README file in the GitHub repository to see an example of what this plot should look like using simulated data.</strong></li>
 </ol>
 <pre class="r"><code># summarise the mean of steps by interval and weekend or not.
 library(dplyr)
