@@ -28,7 +28,7 @@ library(tidyverse)
 ```
 
 ```
-## -- Attaching packages -------------------------------------------------------------------------------------------------------------- tidyverse 1.2.1 --
+## -- Attaching packages ------------------------------------------------------------------------------------------------------------- tidyverse 1.2.1 --
 ```
 
 ```
@@ -63,7 +63,7 @@ library(tidyverse)
 ```
 
 ```
-## -- Conflicts ----------------------------------------------------------------------------------------------------------------- tidyverse_conflicts() --
+## -- Conflicts ---------------------------------------------------------------------------------------------------------------- tidyverse_conflicts() --
 ## x dplyr::filter() masks stats::filter()
 ## x dplyr::lag()    masks stats::lag()
 ```
@@ -410,12 +410,148 @@ median(DFlong_impute_mean$sum)
 ```
 ## [1] 10766.19
 ```
+## Are there differences in activity patterns between weekdays and weekends?
 
-Because I am too lazy to use an if-than statement I noted that these are 61 consecutive days in a row starting with a Monday, so I created a vector consisting of "no","no","no","no","no","yes","yes" corresponding to whether or not the days Monday through Sunday are weekend days. I created 8 copies of that vector `7x8=56` and then added 5 more "no"s to the end of that for Monday thorugh Friday inclusive making a `61x1` vector, which I simply appended to the long table and made into a factor. 
+ 1. Create a new factor variable in the dataset with two levels – “weekday” and “weekend” indicating whether a given date is a weekday or weekend day.
+
+Note that these are 61 consecutive days in a row starting with a Monday, so I created a vector consisting of "no","no","no","no","no","yes","yes" corresponding to whether or not the days Monday through Sunday are weekend days. I created 8 copies of that vector `7x8=56` and then added 5 more "no"s to the end of that for Monday thorugh Friday inclusive making a `61x1` vector, which I simply appended to the long table and made into a factor. 
 
 
 ```r
 weekend <- c(rep(c(rep("no",5),rep("yes",2)),8),c(rep("no",5)))
 DFlong_impute_mean$weekend <- weekend
 DFlong_impute_mean$weekend <- as.factor(DFlong_impute_mean$weekend)
+DFlong_impute_mean
 ```
+
+```
+## # A tibble: 61 x 291
+##    date          X0     X5   X10   X15    X20   X25    X30   X35   X40
+##    <date>     <dbl>  <dbl> <dbl> <dbl>  <dbl> <dbl>  <dbl> <dbl> <dbl>
+##  1 2012-10-01  1.72  0.340 0.132 0.151 0.0755  2.09  0.528 0.868     0
+##  2 2012-10-02  0     0     0     0     0       0     0     0         0
+##  3 2012-10-03  0     0     0     0     0       0     0     0         0
+##  4 2012-10-04 47     0     0     0     0       0     0     0         0
+##  5 2012-10-05  0     0     0     0     0       0     0     0         0
+##  6 2012-10-06  0     0     0     0     0       0     0     0         0
+##  7 2012-10-07  0     0     0     0     0       0     0     0         0
+##  8 2012-10-08  1.72  0.340 0.132 0.151 0.0755  2.09  0.528 0.868     0
+##  9 2012-10-09  0     0     0     0     0      13    28     0         0
+## 10 2012-10-10 34    18     7     0     0       0     0     0         0
+## # ... with 51 more rows, and 281 more variables: X45 <dbl>, X50 <dbl>,
+## #   X55 <dbl>, X100 <dbl>, X105 <dbl>, X110 <dbl>, X115 <dbl>, X120 <dbl>,
+## #   X125 <dbl>, X130 <dbl>, X135 <dbl>, X140 <dbl>, X145 <dbl>,
+## #   X150 <dbl>, X155 <dbl>, X200 <dbl>, X205 <dbl>, X210 <dbl>,
+## #   X215 <dbl>, X220 <dbl>, X225 <dbl>, X230 <dbl>, X235 <dbl>,
+## #   X240 <dbl>, X245 <dbl>, X250 <dbl>, X255 <dbl>, X300 <dbl>,
+## #   X305 <dbl>, X310 <dbl>, X315 <dbl>, X320 <dbl>, X325 <dbl>,
+## #   X330 <dbl>, X335 <dbl>, X340 <dbl>, X345 <dbl>, X350 <dbl>,
+## #   X355 <dbl>, X400 <dbl>, X405 <dbl>, X410 <dbl>, X415 <dbl>,
+## #   X420 <dbl>, X425 <dbl>, X430 <dbl>, X435 <dbl>, X440 <dbl>,
+## #   X445 <dbl>, X450 <dbl>, X455 <dbl>, X500 <dbl>, X505 <dbl>,
+## #   X510 <dbl>, X515 <dbl>, X520 <dbl>, X525 <dbl>, X530 <dbl>,
+## #   X535 <dbl>, X540 <dbl>, X545 <dbl>, X550 <dbl>, X555 <dbl>,
+## #   X600 <dbl>, X605 <dbl>, X610 <dbl>, X615 <dbl>, X620 <dbl>,
+## #   X625 <dbl>, X630 <dbl>, X635 <dbl>, X640 <dbl>, X645 <dbl>,
+## #   X650 <dbl>, X655 <dbl>, X700 <dbl>, X705 <dbl>, X710 <dbl>,
+## #   X715 <dbl>, X720 <dbl>, X725 <dbl>, X730 <dbl>, X735 <dbl>,
+## #   X740 <dbl>, X745 <dbl>, X750 <dbl>, X755 <dbl>, X800 <dbl>,
+## #   X805 <dbl>, X810 <dbl>, X815 <dbl>, X820 <dbl>, X825 <dbl>,
+## #   X830 <dbl>, X835 <dbl>, X840 <dbl>, X845 <dbl>, X850 <dbl>,
+## #   X855 <dbl>, X900 <dbl>, ...
+```
+Now make that long table into a tall table. 
+
+```r
+library(tidyr)
+# columns 2 through 289 represent the 5-minute time intervals 0 through 2355.
+DFtall<- gather(DFlong_impute_mean,2:289,key="interval",value="steps")
+# Note that "Weekend" is automaticaly a factor.
+DFtall
+```
+
+```
+## # A tibble: 17,568 x 5
+##    date          sum weekend interval steps
+##    <date>      <dbl> <fct>   <chr>    <dbl>
+##  1 2012-10-01 10766. no      X0        1.72
+##  2 2012-10-02   126  no      X0        0   
+##  3 2012-10-03 11352  no      X0        0   
+##  4 2012-10-04 12116  no      X0       47   
+##  5 2012-10-05 13294  no      X0        0   
+##  6 2012-10-06 15420  yes     X0        0   
+##  7 2012-10-07 11015  yes     X0        0   
+##  8 2012-10-08 10766. no      X0        1.72
+##  9 2012-10-09 12811  no      X0        0   
+## 10 2012-10-10  9900  no      X0       34   
+## # ... with 17,558 more rows
+```
+
+2. Make a panel plot containing a time series plot (i.e. `type= "l"`) of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis). See the README file in the GitHub repository to see an example of what this plot should look like using simulated data.
+
+
+```r
+# summarise the mean of steps by interval and weekend or not.
+library(dplyr)
+by_weekend_mean <- DFtall %>%
+  group_by(interval,weekend) %>% 
+  summarise(mean_steps=mean(steps))
+by_weekend_mean
+```
+
+```
+## # A tibble: 576 x 3
+## # Groups:   interval [288]
+##    interval weekend mean_steps
+##    <chr>    <fct>        <dbl>
+##  1 X0       no          2.25  
+##  2 X0       yes         0.215 
+##  3 X10      no          0.173 
+##  4 X10      yes         0.0165
+##  5 X100     no          0.421 
+##  6 X100     yes         0.0401
+##  7 X1000    no         37.9   
+##  8 X1000    yes        48.1   
+##  9 X1005    no         18.2   
+## 10 X1005    yes        51.6   
+## # ... with 566 more rows
+```
+
+```r
+#the problem is that we have the "interval" column showing up as a factor. 
+#remove the "X" by invoking stringr
+library(stringr)
+by_weekend_mean$interval <- str_replace_all(by_weekend_mean$interval, "X", "")
+by_weekend_mean$interval <- as.integer(by_weekend_mean$interval)
+# now the interval column cnotains integers
+by_weekend_mean
+```
+
+```
+## # A tibble: 576 x 3
+## # Groups:   interval [288]
+##    interval weekend mean_steps
+##       <int> <fct>        <dbl>
+##  1        0 no          2.25  
+##  2        0 yes         0.215 
+##  3       10 no          0.173 
+##  4       10 yes         0.0165
+##  5      100 no          0.421 
+##  6      100 yes         0.0401
+##  7     1000 no         37.9   
+##  8     1000 yes        48.1   
+##  9     1005 no         18.2   
+## 10     1005 yes        51.6   
+## # ... with 566 more rows
+```
+
+```r
+library(ggplot2)
+#change the name of the levels from "no", "yes" to "weekday", "weekend".
+levels(by_weekend_mean$weekend) <- c("weekday", "weekend")
+# now plot
+p <- ggplot(data = by_weekend_mean, aes(x = interval, y = mean_steps)) + geom_line()
+p + facet_wrap(~weekend,nrow=2) + ggtitle("Mean number of steps by interval")
+```
+
+![](RepData_PeerAssessment1_files/figure-html/unnamed-chunk-19-1.png)<!-- -->
